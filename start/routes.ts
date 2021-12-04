@@ -25,3 +25,4 @@ import Route from '@ioc:Adonis/Core/Route'
 // })
 
 Route.post('/api/login', 'LoginController.login')
+Route.post('/api/logout', 'LoginController.logout')

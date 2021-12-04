@@ -4,12 +4,12 @@ import User from "App/Models/User";
 
 
 export default class LoginController {
-    public async login({ auth, request, session }) {
+    public async login({ auth, request }) {
         const username = request.input("username")
         const password = request.input("password")
         const failedResp = {
             'retcode': -1,
-            'reason': 'Bad password or non-existed user!!!'
+            'data': 'Bad password or non-existed user!!!'
         }
 
         try {
@@ -25,13 +25,20 @@ export default class LoginController {
                 return failedResp
             }
 
-            console.log('user:', user)
-            console.log('session is:', session)
+            // console.log('user:', user)
+            // console.log('session is:', session)
             // Create session
             await auth.use('web').login(user)
+
+            return { retcode: 0, data: 'ok' }
         } catch (error) {
             console.log('raised error from LoginController:', error)
             return failedResp
         }
+    }
+
+    public async logout({ auth }) {
+        await auth.use('web').logout()
+        return { 'retcode': 0, 'data': 'ok' }
     }
 }

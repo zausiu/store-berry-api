@@ -7,6 +7,7 @@ export default class Orders extends BaseSchema {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
       table.integer('order_id').unsigned()
+      table.string('username')
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
        */
