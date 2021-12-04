@@ -1,10 +1,13 @@
-// import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-
-import { HttpContext } from "@adonisjs/http-server/build/standalone";
+// import { HttpContext } from "@adonisjs/http-server/build/standalone";
+import User from "App/Models/User";
 
 
 export default class LoginController {
-    public async login(ctx: HttpContext) {
-        return { resolution: "ok"}
+    public async login({ auth, request }) {
+        const username = request.input("username")
+        const password = request.input("password")
+
+
+        return { username, password }
     }
 }
