@@ -2,22 +2,22 @@ import { DateTime } from 'luxon'
 import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
 
 export default class Sku extends BaseModel {
-  public static table = 'skus'
+  public static table = 'orders'
 
   @column({ isPrimary: true })
   public id: number
 
   @column()
-  public name: string
+  public sku_id: number
 
   @column()
-  public description: string
+  public sku_count: number
 
   @column()
-  public price: number
+  public username: string
 
   @column()
-  public stock: number
+  public state: string
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
