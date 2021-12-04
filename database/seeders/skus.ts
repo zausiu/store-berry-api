@@ -3,7 +3,6 @@ import Sku from 'App/Models/Sku'
 
 export default class SkuSeeder extends BaseSeeder {
   public async run() {
-    // Write your database queries inside the run method
     await Sku.createMany([
       {
         name: "睡眠枕头",

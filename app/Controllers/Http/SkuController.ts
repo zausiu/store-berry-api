@@ -1,6 +1,11 @@
 import Database from '@ioc:Adonis/Lucid/Database'
 import Sku from "App/Models/Sku"
 import Order from "App/Models/Order"
+import axios from 'axios'
+import Env from '@ioc:Adonis/Core/Env'
+
+const warehouse_system_url = Env.get('WAREHOUSE_SYSTEM', 'http://localhost:3333/warehouse')
+const logistics_system_url = Env.get('LOGISTICS_SYSTEM', 'http://localhost:3333/logistics')
 
 export default class SkuController {
     public async list({ request }) {
@@ -30,11 +35,11 @@ export default class SkuController {
             username: userName
         })
 
-        const statement = await Database.rawQuery(
+        const statement = await Database.rawQuery(    // update sql will get the row lock ~
             'update skus set stock = stock - ? where stock >= ? and id = ?',
             [skuCount, skuCount, skuId]
         )
-        console.log('statement is:', statement)
+        // console.log('statement is:', statement)
         if (statement[0].affectedRows === 0) {
             newOrder.merge({ state: 'FAILED' })
             await newOrder.save()
@@ -44,9 +49,21 @@ export default class SkuController {
         newOrder.merge({ state: 'COMPLETED' })
         await newOrder.save()
 
-        // 通知仓库系统
-        // 通知物流系统
+        const info2downstream = {
+            order_id: newOrder.id,
+            username: userName
+        }
 
-        return { user: auth.user, statement }
+        // 异步通知物流系统
+        axios.post(logistics_system_url, info2downstream)
+            .then(_ => console.log('Logistic System accepted the request.'))
+            .catch(err => console.log('A error occured while talking to Logistic System', err))
+        // 异步通知仓库系统
+        axios.post(warehouse_system_url, info2downstream)
+            .then(_ => console.log('Warehouse System accepted the request.'))
+            .catch(err => console.log('A error occured while talking to Warehouse System', err))
+
+        const sku = await Sku.findBy('id', skuId)
+        return { retcode: 0, data: 'ok', order_id: newOrder.id, stock: sku?.stock }
     }
 }

@@ -32,3 +32,17 @@ Route.group(() => {
     Route.get('/sku', 'SkuController.list')
     Route.get('/sku/buy', 'SkuController.buy')
 }).prefix('/api').middleware('auth')
+
+
+// 物流系统
+Route.post('/logistics', ({ request }) => {
+    const orderId = request.input('order_id')
+    const userName = request.input('username')
+    console.log('logistics system is alive ...', orderId, userName)
+})
+// 仓库系统
+Route.post('/warehouse', ({ request }) => {
+    const orderId = request.input('order_id')
+    const userName = request.input('username')
+    console.log('warehouse system is alive ...', orderId, userName)
+})
