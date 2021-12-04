@@ -6,10 +6,16 @@ export default class UserSeeder extends BaseSeeder {
   public async run() {
     const passwordAdmin = 'admin'
     const saltAdmin = 'jkdfhA##'
-    const hashedPasswordAdmin = await Hash.make(passwordAdmin + saltAdmin)
+    const hashedPasswordAdmin = 'admin'   // Hook beforeSave() will hash the password ~~
+    // const hashedPasswordAdmin = await Hash.make(passwordAdmin + saltAdmin)
+    // const hashedPasswordAdmin = await Hash.make(passwordAdmin)
     const passwordFoo = 'bar'
     const saltFoo = 'Z845$~~*'
-    const hashedPasswordFoo = await Hash.make(passwordFoo + saltFoo)
+    const hashedPasswordFoo = 'bar'
+    // const hashedPasswordFoo = await Hash.make(passwordFoo + saltFoo)
+    // const hashedPasswordFoo = await Hash.make(passwordFoo)
+
+    console.log("hashedPasswordAdmin is:", hashedPasswordAdmin)
 
     await User.createMany([
       { name: 'admin', hashedPassword: hashedPasswordAdmin, salt: saltAdmin, role: 'ADMIN' },

@@ -66,4 +66,51 @@ export default class SkuController {
         const sku = await Sku.findBy('id', skuId)
         return { retcode: 0, data: 'ok', order_id: newOrder.id, stock: sku?.stock }
     }
+
+    public async add({ auth, request }) {
+        const userRole = auth.user.role
+        const name = request.input('name')
+        const description = request.input('description')
+        const price = request.input('price')
+        const stock = request.input('stock')
+
+        let retcode = 0
+        let data = 'ok'
+        if (userRole != 'ADMIN') {
+            retcode = -3
+            data = 'Administration privilege required!'
+            return { retcode, data }
+        }
+
+        if (price < 0 || stock < 0) {
+            retcode = -4
+            data = 'Bad parameters found.'
+            return { retcode, data }
+        }
+
+        const newSku = new Sku()
+        try {
+            newSku.fill({
+                name,
+                description,
+                price,
+                stock,
+            })
+            await newSku.save()
+        } catch (err) {
+            retcode = -err.errno
+            data = err.code
+        }
+
+        return { retcode, data }
+    }
 }
+
+// {
+//         "code": "ER_DUP_ENTRY",
+//         "errno": 1062,
+//         "sqlMessage": "Duplicate entry '六眼飞鱼000' for key 'skus.skus_name_unique'",
+//         "sqlState": "23000",
+//         "index": 0,
+//         "sql": "insert into `skus` (`created_at`, `description`, `name`, `price`, `stock`, `updated_at`) values ('2021-12-04 22:36:43', '生活在台湾海域的一种凶猛的鱼', '六眼飞鱼000', '343', '5', '2021-12-04 22:36:43')"
+//     }

@@ -30,7 +30,8 @@ Route.post('/api/logout', 'LoginController.logout')
 // Route.get('/api/sku', 'SkuController.list')
 Route.group(() => {
     Route.get('/sku', 'SkuController.list')
-    Route.get('/sku/buy', 'SkuController.buy')
+    Route.post('/sku/buy', 'SkuController.buy')
+    Route.post('/sku/add', 'SkuController.add')
 }).prefix('/api').middleware('auth')
 
 

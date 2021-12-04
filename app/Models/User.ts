@@ -21,8 +21,10 @@ export default class User extends BaseModel {
 
   @beforeSave()
   public static async hashPassword(user: User) {
-    if (user.$dirty.hashedPassword || user.$dirty.salt) {
-      user.hashedPassword = await Hash.make(user.hashedPassword + user.salt)
-    }
+    // if (user.$dirty.hashedPassword || user.$dirty.salt) {
+    if (user.$dirty.hashedPassword) {
+      // user.hashedPassword = await Hash.make(user.hashedPassword + user.salt)
+      user.hashedPassword = await Hash.make(user.hashedPassword)
   }
+}
 }

@@ -19,8 +19,14 @@ export default class LoginController {
                 return failedResp
             }
 
-            let passed = await Hash.verify(user.hashedPassword, password + user.salt)
-            passed = true
+            // const passed = await Hash.verify(user.hashedPassword, password + user.salt)
+            let passed = await Hash.verify(user.hashedPassword, password)
+
+
+            // const hashed = await Hash.make(password)
+            // passed = await Hash.verify(hashed, password)
+
+            console.log(`LoginController verify "${username}" with password "${password}" against "${user.hashedPassword}" passed: ${passed}`)
             if (!passed) {
                 return failedResp
             }

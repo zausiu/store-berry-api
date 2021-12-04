@@ -6,7 +6,7 @@ export default class Skus extends BaseSchema {
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')  // sku id
-      table.string('name')
+      table.string('name').unique()
       table.string('description')
       table.decimal('price')
       table.integer('stock')   // 库存
