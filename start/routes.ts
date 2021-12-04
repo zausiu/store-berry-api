@@ -26,3 +26,8 @@ import Route from '@ioc:Adonis/Core/Route'
 
 Route.post('/api/login', 'LoginController.login')
 Route.post('/api/logout', 'LoginController.logout')
+
+// Route.get('/api/sku', 'SkuController.list')
+Route.group(() => {
+    Route.get('/sku', 'SkuController.list')
+}).prefix('/api').middleware('auth')
