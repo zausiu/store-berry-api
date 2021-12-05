@@ -36,7 +36,11 @@ export default class LoginController {
             // Create session
             await auth.use('web').login(user)
 
-            return { retcode: 0, data: 'ok' }
+            return { retcode: 0, 
+                data: {
+                    role: user.role,
+                    uid: user.id
+            } }
         } catch (error) {
             console.log('raised error from LoginController:', error)
             return failedResp

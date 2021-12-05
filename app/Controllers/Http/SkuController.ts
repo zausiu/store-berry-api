@@ -10,17 +10,18 @@ const logistics_system_url = Env.get('LOGISTICS_SYSTEM', 'http://localhost:3333/
 export default class SkuController {
     public async list({ request }) {
         const keywords = request.input('keywords')
-
+        let records = []
         if (keywords == null || keywords == '') {
-            const all = await Sku.all()
-            return all
+            records = await Sku.all()
+        } else {
+            const result = await Database.rawQuery(
+                'select * from skus where MATCH(name, description) against(? in NATURAL LANGUAGE MODE)', [keywords]
+            )
+            records = result[0]
+            // console.log('records are:', records, 'keywords are:', keywords, 'result is:', result)
         }
 
-        const records = await Database.rawQuery(
-            'select * from skus where MATCH(name, description) against(? in NATURAL LANGUAGE MODE)', [keywords]
-        )[0]
-
-        return { records }
+        return { retcode: 0, data: records }
     }
 
     public async buy({ auth, request }) {
@@ -71,8 +72,10 @@ export default class SkuController {
         const userRole = auth.user.role
         const name = request.input('name')
         const description = request.input('description')
-        const price = request.input('price')
-        const stock = request.input('stock')
+        const price = Number(request.input('price')) * 100
+        const stock = Math.floor(request.input('stock'))
+
+        console.log(`name ${name} ${description} ${price} ${stock}`)
 
         let retcode = 0
         let data = 'ok'
@@ -82,7 +85,7 @@ export default class SkuController {
             return { retcode, data }
         }
 
-        if (price < 0 || stock < 0) {
+        if (price <= 0 || stock <= 0) {
             retcode = -4
             data = 'Bad parameters found.'
             return { retcode, data }
