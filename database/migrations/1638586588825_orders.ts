@@ -9,7 +9,9 @@ export default class Orders extends BaseSchema {
       table.integer('sku_id').unsigned()
       table.integer('sku_count').unsigned()
       table.string('username')
-      table.enum('state', ['DOING', 'COMPLETED', 'FAILED']).defaultTo('DOING')
+      table.enum('state', ['INITIATED', 'CONSUMED']).defaultTo('INITIATED')
+      table.boolean('reported2logistics').defaultTo(false)
+      table.boolean('reported2warehouse').defaultTo(false)
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
        */
