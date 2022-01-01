@@ -9,6 +9,7 @@ export default class AppProvider {
 
   public async boot() {
     // IoC container is ready
+    let a = this.app.container;
   }
 
   public async ready() {

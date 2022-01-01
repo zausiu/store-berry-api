@@ -4,8 +4,8 @@ import Order from "App/Models/Order"
 import axios from 'axios'
 import Env from '@ioc:Adonis/Core/Env'
 
-const warehouse_system_url = Env.get('WAREHOUSE_SYSTEM', 'http://localhost:3333/warehouse')
-const logistics_system_url = Env.get('LOGISTICS_SYSTEM', 'http://localhost:3333/logistics')
+const WAREHOUSE_SYSTEM_URL = Env.get('WAREHOUSE_SYSTEM', 'http://localhost:3333/warehouse')
+const LOGISTICS_SYSTEM_URL = Env.get('LOGISTICS_SYSTEM', 'http://localhost:3333/logistics')
 
 export default class SkuController {
     public async list({ request }) {
@@ -71,14 +71,14 @@ export default class SkuController {
             username: userName
         }
         // 异步通知物流系统
-        axios.post(logistics_system_url, info2downstream)
+        axios.post(LOGISTICS_SYSTEM_URL, info2downstream)
             .then(_ => {
                 Order.query().where('id', info2downstream.order_id).update('reported2logistics', true)
                 console.log('Logistic System accepted the request.')
             })
             .catch(err => console.log('A error occured while talking to Logistic System', err))
         // 异步通知仓库系统
-        axios.post(warehouse_system_url, info2downstream)
+        axios.post(WAREHOUSE_SYSTEM_URL, info2downstream)
             .then(_ => {
                 Order.query().where('id', info2downstream.order_id).update('reported2warehouse', true)
                 console.log('Warehouse System accepted the request.')
@@ -138,9 +138,6 @@ export default class SkuController {
 //         "index": 0,
 //         "sql": "insert into `skus` (`created_at`, `description`, `name`, `price`, `stock`, `updated_at`) values ('2021-12-04 22:36:43', '生活在台湾海域的一种凶猛的鱼', '六眼飞鱼000', '343', '5', '2021-12-04 22:36:43')"
 //     }
-
-
-
             // const statement = await Database.rawQuery(    // update sql will get the row lock ~
             //     'update skus set stock = stock - ? where stock >= ? and id = ?',
             //     [skuCount, skuCount, skuId]
