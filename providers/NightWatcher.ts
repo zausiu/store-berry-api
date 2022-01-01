@@ -60,7 +60,7 @@ export default class NightWatcher {
           if (notReported2LogisticsOrders.length > 0) {
             // 异步通知物流系统
             const info2downstream = notReported2LogisticsOrders.map(x => { return { order_id: x.id, username: x.username } })
-            axios.post(this.LOGISTICS_SYSTEM_URL,)
+            axios.post(this.LOGISTICS_SYSTEM_URL, info2downstream)
               .then(async _ => {
                 const orders = notReported2LogisticsOrders.map(x => x.id)
                 await this.Order.query().whereIn('id', orders).update({ reported2logistics: true })
